@@ -1,0 +1,30 @@
+Computer network programming
+
+Computer network programming involves writing computer programs 
+that enable processes to communicate with each other across a computer network.
+
+Connection-oriented and connectionless communications
+Most of communications can be divided into connection-oriented, and connectionless. 
+Whether a communication is connection-oriented or connectionless, is defined 
+by the communication protocol, and not by application programming interface(API). 
+Examples of the connection-oriented protocols include Transmission Control Protocol 
+(TCP) and examples of connectionless protocols include User Datagram Protocol (UDP). 
+
+Clients and servers
+For connection-oriented communications, communication parties usually have different roles. 
+One party is usually waiting for incoming connections; 
+this party is usually referred to as "server". 
+Another party is the one which initiates connection; 
+this party is usually referred to as "client".
+
+Transmission Control Protocol (TCP)
+The Transmission Control Protocol (TCP) is one of the Internet protocol suite. 
+It originated in the initial network implementation in which it complemented 
+the Internet Protocol (IP). 
+Therefore, the entire suite is commonly referred to as TCP/IP.
+
+User Datagram Protocol (UDP)
+UDP is a connectionless protocol, meaning that messages are sent without 
+negotiating a connection. UDP does not keep track of what it has sent. 
+UDP provides checksums for data integrity, and port numbers for addressing different
+functions at the source and destination of the datagram.

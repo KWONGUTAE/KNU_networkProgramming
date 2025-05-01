@@ -1,0 +1,165 @@
+0600	소유자 읽기/쓰기	오직 소유자만 읽고 쓸 수 있음
+0644	소유자 읽기/쓰기, 다른 사용자 읽기	대부분의 텍스트 파일에 사용됨
+0666	모두 읽기/쓰기	퍼블릭 파일 (주의 요함)
+0755	소유자 읽기/쓰기/실행, 다른 사용자 읽기/실행	실행 가능한 파일 (ex. shell script, 바이너리)
+0777	모두 읽기/쓰기/실행	완전 개방된 권한 (보안에 매우 위험)
+
+
+
+좋아! 여기선 C 언어의 파일 입출력 함수들을 고수준 I/O와 저수준 I/O로 나눠서 소개하고, 각각의 함수 사용법, 인자, 반환값, 예시를 자세히 설명해줄게.
+🧭 목차
+
+    고수준 파일 입출력 (C 표준 라이브러리)
+
+        fopen, fclose, fgetc, fputc, fgets, fputs, fread, fwrite, fprintf, fscanf, fseek, ftell, rewind, feof, fflush
+
+    저수준 파일 입출력 (POSIX, 유닉스 시스템 호출)
+
+        open, close, read, write, lseek
+
+<a name="1"></a>
+🧾 1. 고수준 파일 입출력 (C 표준 라이브러리)
+✅ 1.1 fopen(), fclose()
+
+FILE *fopen(const char *filename, const char *mode);
+int fclose(FILE *stream);
+
+    filename: 파일 이름
+
+    mode:
+
+    모드	의미
+    "r"	읽기 모드 (파일 존재해야 함)
+    "w"	쓰기 모드 (없으면 생성, 있으면 덮어씀)
+    "a"	추가 모드 (없으면 생성, 있으면 끝에 추가)
+    "r+"	읽기 + 쓰기 (파일 존재해야 함)
+    "w+"	읽기 + 쓰기 (없으면 생성, 있으면 덮어씀)
+    "a+"	읽기 + 추가 (없으면 생성)
+    "b"	바이너리 모드에서 사용 ("rb", "wb" 등)
+
+예제
+
+FILE *fp = fopen("file.txt", "r");
+if (fp == NULL) {
+    perror("파일 열기 실패");
+    exit(1);
+}
+fclose(fp);
+
+✅ 1.2 문자 단위 입출력: fgetc(), fputc()
+
+int fgetc(FILE *stream);         // 파일에서 문자 1개 읽기
+int fputc(int c, FILE *stream);  // 파일에 문자 1개 쓰기
+
+예제
+
+char ch;
+while ((ch = fgetc(fp)) != EOF) {
+    putchar(ch);
+}
+
+✅ 1.3 문자열 단위 입출력: fgets(), fputs()
+
+char *fgets(char *str, int n, FILE *stream);   // 최대 n-1문자까지 읽고 \0 추가
+int fputs(const char *str, FILE *stream);      // 문자열 전체 쓰기
+
+예제
+
+char line[100];
+fgets(line, 100, fp);     // 줄 단위로 읽기
+fputs(line, stdout);      // 콘솔에 출력
+
+✅ 1.4 바이너리 입출력: fread(), fwrite()
+
+size_t fread(void *ptr, size_t size, size_t nmemb, FILE *stream);
+size_t fwrite(const void *ptr, size_t size, size_t nmemb, FILE *stream);
+
+    ptr: 읽거나 쓸 버퍼
+
+    size: 각 요소 크기
+
+    nmemb: 요소 개수
+
+예제
+
+int arr[5] = {1,2,3,4,5};
+fwrite(arr, sizeof(int), 5, fp);
+
+✅ 1.5 서식 입출력: fprintf(), fscanf()
+
+int fprintf(FILE *stream, const char *format, ...);
+int fscanf(FILE *stream, const char *format, ...);
+
+예제
+
+fprintf(fp, "이름: %s, 나이: %d\n", name, age);
+fscanf(fp, "%s %d", name, &age);
+
+✅ 1.6 파일 위치 제어: fseek(), ftell(), rewind()
+
+int fseek(FILE *stream, long offset, int whence);
+long ftell(FILE *stream);
+void rewind(FILE *stream);
+
+    whence:
+
+    값	의미
+    SEEK_SET	파일 시작
+    SEEK_CUR	현재 위치
+    SEEK_END	파일 끝
+
+예제
+
+fseek(fp, 0, SEEK_END);     // 파일 끝으로 이동
+long pos = ftell(fp);       // 현재 위치 확인
+rewind(fp);                 // 파일 처음으로 이동
+
+✅ 1.7 기타: feof(), fflush()
+
+int feof(FILE *stream);      // 파일 끝인지 확인
+int fflush(FILE *stream);    // 버퍼 비우기
+
+<a name="2"></a>
+⚙️ 2. 저수준 파일 입출력 (POSIX)
+✅ 2.1 open(), close()
+
+int open(const char *pathname, int flags, mode_t mode);
+int close(int fd);
+
+    flags: O_RDONLY, O_WRONLY, O_RDWR, O_CREAT, O_TRUNC, O_APPEND
+
+    mode: 0666, 0644 등 (파일 생성 시 권한)
+
+예제
+
+int fd = open("file.txt", O_WRONLY | O_CREAT, 0644);
+if (fd < 0) perror("open");
+close(fd);
+
+✅ 2.2 read(), write()
+
+ssize_t read(int fd, void *buf, size_t count);
+ssize_t write(int fd, const void *buf, size_t count);
+
+예제
+
+char buf[100];
+int n = read(fd, buf, sizeof(buf));
+write(1, buf, n);  // 콘솔에 출력
+
+✅ 2.3 lseek()
+
+off_t lseek(int fd, off_t offset, int whence);
+
+    파일 위치를 이동함 (고수준의 fseek()과 유사)
+
+예제
+
+lseek(fd, 0, SEEK_END);  // 파일 끝으로 이동
+
+✅ 정리 비교
+구분	고수준 I/O (fopen)	저수준 I/O (open)
+사용 편의성	높음 (버퍼 있음)	낮음 (직접 처리 필요)
+함수군	fopen, fgetc, fputs 등	open, read, write 등
+성능	버퍼링으로 빠를 수 있음	버퍼링 없음
+권장 사용	대부분의 C 프로그램	OS 수준 제어, 시스템 프로그래밍

@@ -1,0 +1,14 @@
+{
+    "files.associations": {
+        "stdio.h": "c",
+        "string.h": "c",
+        "unistd.h": "c",
+        "socket.h": "c"
+    },
+    "vim.handleKeys": {
+        "<C-c>": false,
+        "<C-v>": false,
+        "<C-z>": false
+    },
+    "C_Cpp.errorSquiggles": "disabled"
+}

@@ -1,0 +1,6 @@
+문자열 처리 함수: sscanf(), sprintf()
+파일 입력 함수: fgets(), fscanf()
+파일 출력 함수: fputs(), fprintf()
+형식화된 파일 입출력: fprintf(), fscanf()
+라인 단위 파일 입출력: fputs(), fgets()
+문자 단위 파일 입출력: fputc(), fgetc()

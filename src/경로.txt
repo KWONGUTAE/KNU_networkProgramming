@@ -1,0 +1,8 @@
+cd Documents/경북대학교/강의/네트워크프로그래밍_정창수/src/PDF
+
+cd Documents/경북대학교/강의/네트워크프로그래밍_정창수/src/HW
+
+cd Documents/경북대학교/강의/네트워크프로그래밍_정창수/src/EXAM/mid
+
+cd Documents/경북대학교/강의/네트워크프로그래밍_정창수/src
+

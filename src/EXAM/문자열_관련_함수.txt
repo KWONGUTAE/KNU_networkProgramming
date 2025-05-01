@@ -1,0 +1,210 @@
+🔹 문자열 관련 함수들
+1. strlen()
+
+    기능: 문자열의 길이를 반환 (널 문자 \0 제외)
+
+    원형: size_t strlen(const char *str);
+
+    예시:
+
+    c
+
+    #include <stdio.h>
+    #include <string.h>
+
+    int main() {
+        char str[] = "hello";
+        printf("Length: %lu\n", strlen(str)); // 5
+        return 0;
+    }
+
+2. strcpy()
+
+    기능: 문자열을 복사 (널 문자 포함)
+
+    원형: char *strcpy(char *dest, const char *src);
+
+    예시:
+
+    c
+
+    char src[] = "hello";
+    char dest[10];
+    strcpy(dest, src);
+
+3. strncpy()
+
+    기능: 문자열을 최대 n자까지 복사
+
+    원형: char *strncpy(char *dest, const char *src, size_t n);
+
+    주의: 복사 후 null 문자가 없을 수 있음
+
+    예시:
+
+    c
+
+    strncpy(dest, src, 3); // "hel"
+
+4. strcat()
+
+    기능: 문자열을 뒤에 이어 붙이기
+
+    원형: char *strcat(char *dest, const char *src);
+
+    예시:
+
+    c
+
+    char str1[20] = "hello ";
+    char str2[] = "world";
+    strcat(str1, str2); // str1 = "hello world"
+
+5. strncat()
+
+    기능: 최대 n개의 문자만 이어붙이기
+
+    원형: char *strncat(char *dest, const char *src, size_t n);
+
+    예시:
+
+    c
+
+    strncat(str1, str2, 3); // "hello wor"
+
+6. strcmp()
+
+    기능: 두 문자열 비교 (사전순)
+
+    원형: int strcmp(const char *s1, const char *s2);
+
+    예시:
+
+    c
+
+    if (strcmp("apple", "banana") < 0) { ... }
+
+7. strncmp()
+
+    기능: 앞에서부터 n개 비교
+
+    원형: int strncmp(const char *s1, const char *s2, size_t n);
+
+    예시:
+
+    c
+
+    strncmp("apple", "application", 3); // 비교 결과는 0 (앞 3개 같음)
+
+8. strchr()
+
+    기능: 특정 문자의 첫 등장 위치 반환
+
+    원형: char *strchr(const char *str, int c);
+
+    예시:
+
+    c
+
+    char *ptr = strchr("hello", 'e'); // ptr은 "ello"를 가리킴
+
+9. strrchr()
+
+    기능: 특정 문자의 마지막 등장 위치
+
+    원형: char *strrchr(const char *str, int c);
+
+    예시:
+
+    c
+
+    char *ptr = strrchr("hello", 'l'); // ptr은 "lo"
+
+10. strstr()
+
+    기능: 문자열 내에서 부분 문자열 찾기
+
+    원형: char *strstr(const char *haystack, const char *needle);
+
+    예시:
+
+    c
+
+    char *ptr = strstr("hello world", "world"); // ptr은 "world"
+
+11. strspn()
+
+    기능: 처음부터 accept에 있는 문자만 있는 구간 길이
+
+    원형: size_t strspn(const char *s, const char *accept);
+
+    예시:
+
+    c
+
+    size_t len = strspn("abcde123", "abcde"); // 5
+
+12. strcspn()
+
+    기능: 처음으로 reject에 있는 문자가 나올 때까지 길이
+
+    원형: size_t strcspn(const char *s, const char *reject);
+
+    예시:
+
+    c
+
+    size_t len = strcspn("abc123", "123"); // 3
+
+13. strpbrk()
+
+    기능: accept에 있는 문자 중 첫 등장 문자 위치 반환
+
+    원형: char *strpbrk(const char *s, const char *accept);
+
+    예시:
+
+    c
+
+    char *ptr = strpbrk("hello", "aeiou"); // ptr은 "ello"
+
+14. strtok()
+
+    기능: 문자열 토큰화 (문자열 자르기)
+
+    원형: char *strtok(char *str, const char *delim);
+
+    예시:
+
+    c
+
+    char str[] = "a,b,c";
+    char *token = strtok(str, ",");
+    while (token != NULL) {
+        printf("%s\n", token);
+        token = strtok(NULL, ",");
+    }
+
+15. memset()
+
+    기능: 메모리를 특정 값으로 초기화 (문자열 포함)
+
+    원형: void *memset(void *s, int c, size_t n);
+
+    예시:
+
+    c
+
+    char str[10];
+    memset(str, ' ', sizeof(str)); // 공백으로 초기화
+
+🔸 참고로 자주 쓰는 표준 입출력과 문자열 변환 함수들도:
+함수	설명
+sprintf()	문자열 포맷 지정 후 버퍼에 저장
+snprintf()	sprintf()과 같지만 길이 제한
+atoi()	문자열을 정수로 변환
+atof()	문자열을 실수로 변환
+strtol()	문자열을 long으로 변환
+
+필요한 함수 위주로 더 자세히 설명하거나, 실습 코드도 도와줄 수 있어!
+어떤 함수가 제일 궁금해?

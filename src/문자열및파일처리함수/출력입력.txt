@@ -1,0 +1,4 @@
+                     |   출력    |   입력   | 
+화면                 | printf()  | scanf()  |
+문자열(format)       | sprintf() | sscanf() |
+파일(형식화: format) | printf()  | scanf()  |
