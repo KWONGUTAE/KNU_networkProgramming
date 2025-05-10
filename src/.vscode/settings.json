@@ -3,7 +3,9 @@
         "stdio.h": "c",
         "string.h": "c",
         "unistd.h": "c",
-        "socket.h": "c"
+        "socket.h": "c",
+        "wait.h": "c",
+        "cstdlib": "c"
     },
     "vim.handleKeys": {
         "<C-c>": false,

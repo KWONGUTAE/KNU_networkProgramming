@@ -8,16 +8,15 @@ int main(int argc, char *argv[])
 	if(pid==0)     // if Child Process
 	{
 		puts("Hi I'am a child process");
+		puts("End child process");
+		return 0;
 	}
 	else
 	{
 		printf("Child Process ID: %d \n", pid);
 		sleep(30);     // Sleep 30 sec.
+		puts("End parent process");
 	}
 
-	if(pid==0)
-		puts("End child process");
-	else
-		puts("End parent process");
 	return 0;
 }

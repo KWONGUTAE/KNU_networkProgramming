@@ -24,8 +24,10 @@ int main(int argc, char *argv[])
 
 	for(i=0; i<3; i++)
 	{
-		puts("wait...");
+		printf("wait: %d\n", i);
 		sleep(100);
 	}
+
+	printf("i=%d\n", i);
 	return 0;
 }

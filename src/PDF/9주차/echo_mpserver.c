@@ -1,5 +1,3 @@
-// 2021115744 권구태
-
 #define _XOPEN_SOURCE 700
 
 #include <stdio.h>
@@ -10,19 +8,8 @@
 #include <sys/wait.h>
 #include <arpa/inet.h>
 #include <sys/socket.h>
-#include <time.h>
 
-#define BUF_SIZE 100
-#define PING_MSG 1
-#define PONG_MSG 2
-#define TERMINATE_MSG 3
-
-typedef struct {
-    int cmd;
-    char time_msg[BUF_SIZE];
-} PACKET;
-
-
+#define BUF_SIZE 1024 //30
 void error_handling(char *message);
 void read_childproc(int sig);
 
@@ -33,6 +20,7 @@ int main(int argc, char *argv[]) {
     struct sigaction act;
     socklen_t adr_sz;
     int str_len = 0, state = 0;
+    char buf[BUF_SIZE];
     if (argc != 2) {
         printf("Usage: %s <port>\n", argv[0]);
         exit(1);
@@ -58,7 +46,6 @@ int main(int argc, char *argv[]) {
     }
 
     clnt_sock = 0;
-    PACKET recv_pckt, send_pckt;
 
     while (1)
     {
@@ -69,10 +56,7 @@ int main(int argc, char *argv[]) {
         } else {
             printf("new client connected: %d\n", clnt_sock);
         }
-        // port_num = ntohs(clnt_adr.sin_port);
-
         pid = fork();
-
         if (pid == -1) {
             close(clnt_sock);
             continue;
@@ -81,45 +65,12 @@ int main(int argc, char *argv[]) {
         if (pid == 0) {
             // 통신 용도 processor
             close(serv_sock);
-            int flag = 0;
-            time_t start, end, timeSend;    
-            struct tm *p;        
-            int hour = 0, min = 0, sec = 0;
-
-            while ((str_len = read(clnt_sock, &recv_pckt, sizeof(PACKET))) != 0)
+            while ((str_len=read(clnt_sock, buf, BUF_SIZE)) != 0)
             {
-                if (recv_pckt.cmd == PING_MSG) {
-                    printf("[Rx] PING(%d) time: %s from Port(%u)=> ", recv_pckt.cmd, recv_pckt.time_msg, clnt_adr.sin_port);
-                    if (flag == 0) {
-                        start = time(NULL);
-                        flag = 1;
-                    } 
-                    end = time(NULL);
-                    double elapsed_time = difftime(end, start);
-                    start = end;
+                buf[str_len] = '\0';
 
-                    if (elapsed_time > 4) {
-                        send_pckt.cmd = TERMINATE_MSG;
-                        strcpy(send_pckt.time_msg, "Connection close");
-                        printf("[Tx] TERMINATE(%d): %s to Port(%u)\n", send_pckt.cmd, send_pckt.time_msg, clnt_adr.sin_port);
-                        write(clnt_sock, &send_pckt, sizeof(send_pckt));
-                        break;
-                    } else {
-                        send_pckt.cmd = PONG_MSG;
-                        timeSend = time(NULL);
-                        p = localtime(&timeSend);
-                        sprintf(send_pckt.time_msg, "%d:%d:%d",
-                            p->tm_hour, 
-                            p->tm_min, 
-                            p->tm_sec
-                        );
-                        write(clnt_sock, &send_pckt, sizeof(send_pckt));
-                        printf("[Tx] PONG(%d) %s to Port(%u)\n", send_pckt.cmd, send_pckt.time_msg, clnt_adr.sin_port);
-                    
-                    }                    
-                } else {
-                    printf("Invalid cmd\n");
-                }
+                printf("sock: %d, len: %d, buf: %s pid: %d port: %d\n", clnt_sock, str_len, buf, pid, clnt_adr.sin_port);
+                write(clnt_sock, buf, str_len);
             }
             close(clnt_sock);
             puts("client disconnected...");

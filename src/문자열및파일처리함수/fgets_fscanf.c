@@ -36,3 +36,11 @@ int main() {
 
     return 0;
 }
+
+
+/*
+        fgets(input_message, sizeof(BUF_SIZE), stdin);
+        if (input_message[strlen(input_message) - 1] != '\0') {
+            input_message[strlen(input_message) - 1] = '\0';
+        }
+*/

@@ -11,13 +11,14 @@
 #include <time.h>
 
 #define BUF_SIZE 100
-#define PING_MSG 1
-#define PONG_MSG 2
-#define TERMINATE_MSG 3
+
+#define CMD_DATA 1
+#define CMD_NOTIFY 2
+#define CMD_TERMINATE 3
 
 typedef struct {
-    int cmd;
-    char time_msg[BUF_SIZE];
+    int cmd;               // 명령 종류
+    char payload[BUF_SIZE]; // 시간 또는 메시지
 } PACKET;
 
 void error_handling(char *message);
@@ -27,8 +28,10 @@ int main(int argc, char* argv[])
 	int sock;
 	struct sockaddr_in serv_addr;
 	int str_len;
-	
-	if(argc!=3){
+    char *KeepMsg = "Keep going!";
+    char *EndMsg = "Session ended by server";
+
+    if(argc!=3){
 		printf("Usage : %s <IP> <port>\n", argv[0]);
 		exit(1);
 	}
@@ -48,44 +51,46 @@ int main(int argc, char* argv[])
 
     printf("Connected..............\n");
 
-    PACKET send_pckt, recv_pckt;
-
+    PACKET recv_pckt, send_pckt;
     int randNum;
     time_t timeNow;
 
-    for (int i = 1; i <= 10; i++) {
-        randNum = (1 + rand() % 5);  // 1 ~ 5 사이의 랜덤한 값
+    while (1)
+    {
+        randNum = (1 + rand() % 10);
         sleep(randNum);
 
         timeNow = time(NULL);
         struct tm *p;
         p = localtime(&timeNow);
-        sprintf(send_pckt.time_msg, "%d:%d:%d",
-            p->tm_hour, 
-            p->tm_min, 
+        sprintf(send_pckt.payload,
+             "%d-%d-%d %d:%d:%d", 
+             p->tm_year,
+            p->tm_mon,
+            p->tm_mday,
+            p->tm_hour,
+            p->tm_min,
             p->tm_sec
         );
-        send_pckt.cmd = PING_MSG;
+        send_pckt.cmd = CMD_DATA;
+        write(sock, (void *)&send_pckt, sizeof(PACKET));
+        printf("[Tx] CMD_DATA: %s\n", send_pckt.payload);
 
-#ifdef DEBUG
-        printf("%s\n", clnt_pckt.time_msg)
-#endif
-        // write(sock, (void *)&send_pckt, sizeof(send_pckt));
+        read(sock, (void *)&recv_pckt, sizeof(PACKET));
 
-        write(sock, &send_pckt, sizeof(send_pckt));
-        printf("[Tx] PING(%d), sleep(%d), [%2d]: %s => ", send_pckt.cmd, randNum, i, send_pckt.time_msg);
-
-        read(sock, &recv_pckt, sizeof(recv_pckt));
-
-        if (recv_pckt.cmd == TERMINATE_MSG) {
-            printf("[Rx] TERMINATE(%d), %s\n", recv_pckt.cmd, recv_pckt.time_msg);
+        if (recv_pckt.cmd == CMD_NOTIFY) {
+            printf("[Rx] CMD_NOTIFY: %s\n", KeepMsg);
+            read(sock, (void *)&recv_pckt, sizeof(PACKET));
+        } else if (recv_pckt.cmd == CMD_TERMINATE) {
+            printf("[Rx] CMD_TERMINATE: %s\n", EndMsg);
             break;
-        } else if (recv_pckt.cmd == PONG_MSG) {
-            printf("[Rx] PONG(%d), time: %s\n", recv_pckt.cmd, recv_pckt.time_msg);
         } else {
             printf("Invalid cmd\n");
         }
     }
+    
+
+    
 
     printf("Client close\n");
 	close(sock);
