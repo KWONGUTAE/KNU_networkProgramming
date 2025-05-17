@@ -5,7 +5,10 @@
         "unistd.h": "c",
         "socket.h": "c",
         "wait.h": "c",
-        "cstdlib": "c"
+        "cstdlib": "c",
+        "signal.h": "c",
+        "in.h": "c",
+        "types.h": "c"
     },
     "vim.handleKeys": {
         "<C-c>": false,
